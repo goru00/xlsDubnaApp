@@ -1,15 +1,16 @@
 import React from 'react';
-import xlsTableItemComponent from './xlsTableItemComponent';
-
-
-export default function xlsTableComponent(props) {
+import XLSTableItemComponent from './XLSTableItemComponent';
+export default function XLSTableComponent(props)
+{
     return (
         <table>
-            {
-                props.data.map((item, index) => {
-                    return <xlsTableItemComponent data={item} key={item.id} index={index} />
-                })
-            }
+            <tbody>
+                {
+                    props.data.map((item, index) => {
+                        return <XLSTableItemComponent data={item} key={item.id} index={index} />
+                    })
+                }
+            </tbody>
         </table>
-    );
+    )
 }
