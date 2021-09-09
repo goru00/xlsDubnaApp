@@ -1,21 +1,30 @@
 import { useState } from "react";
-import XLSInputComponent from "./components/XLSInputComponent";
-import XLSTableComponent from "./components/XLSTableComponent";
-import XLSX from 'node-xlsx';
 import fs from 'fs';
+import path from 'path';
+import { ExcelRenderer, OutTable } from './components/ExcelRendererComponent';
+import ExcelRendererOutTable from "./components/ExcelRendererOutTable";
+import InputComponent from "./components/InputComponent";
+
 function App() {
-  const [data, setData] = useState([
-    {id: null, title: null}
-  ]);
-  function createTable(file) 
-  {
-    const workSheetsFromBuffer = XLSX.parse(fs.readFileSync(file.name));
-    console.log(workSheetsFromBuffer);
+  const [data, setData] = useState('');
+  function fileHandler(event) {
+    let fileObj = event.target.files[0];
+    console.log(fileObj);
+    ExcelRenderer(fileObj, (err, resp) => {
+      if (err) {
+        console.log(err);
+      } else {
+        setData({
+          cols: resp.cols,
+          rows: resp.rows
+        })
+      }
+    });
   }
   return (
     <div className="wrapper">
-      <XLSTableComponent data={data} /> 
-      <XLSInputComponent createTable={createTable} />
+    <InputComponent fileHandler={fileHandler} />
+    <ExcelRendererOutTable data={data} />
     </div>
   )
 }
