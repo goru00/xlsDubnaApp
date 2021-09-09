@@ -1,7 +1,7 @@
 import { useState } from "react";
 import fs from 'fs';
 import path from 'path';
-import { ExcelRenderer, OutTable } from './components/ExcelRendererComponent';
+import { ExcelRenderer } from './components/ExcelRendererComponent';
 import ExcelRendererOutTable from "./components/ExcelRendererOutTable";
 import InputComponent from "./components/InputComponent";
 
@@ -23,8 +23,8 @@ function App() {
   }
   return (
     <div className="wrapper">
-    <InputComponent fileHandler={fileHandler} />
-    <ExcelRendererOutTable data={data} />
+      <InputComponent fileHandler={fileHandler} />
+      <ExcelRendererOutTable data={data} />
     </div>
   )
 }
