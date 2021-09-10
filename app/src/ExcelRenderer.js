@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import XLSX from 'xlsx';
 
 export function ExcelRenderer(file, callback) {

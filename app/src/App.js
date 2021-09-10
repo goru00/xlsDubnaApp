@@ -1,9 +1,8 @@
 import { useState } from "react";
-import fs from 'fs';
-import path from 'path';
-import { ExcelRenderer } from './components/ExcelRendererComponent';
+import { ExcelRenderer } from './ExcelRenderer';
 import ExcelRendererOutTable from "./components/ExcelRendererOutTable";
 import InputComponent from "./components/InputComponent";
+import './App.css';
 
 function App() {
   const [data, setData] = useState('');
