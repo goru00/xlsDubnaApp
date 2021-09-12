@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ExcelRenderer } from './ExcelRenderer';
 import ExcelRendererOutTable from "./components/ExcelRendererOutTable";
 import InputComponent from "./components/InputComponent";
-import './App.css';
+import { Container } from "react-bootstrap";
 
 function App() {
   const [data, setData] = useState('');
@@ -23,7 +23,9 @@ function App() {
   return (
     <div className="wrapper">
       <InputComponent fileHandler={fileHandler} />
-      <ExcelRendererOutTable data={data} />
+      <Container>
+        <ExcelRendererOutTable data={data} />
+      </Container>
     </div>
   )
 }

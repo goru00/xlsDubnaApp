@@ -5,7 +5,9 @@ function ExcelRendererOutTableItemList({ item }) {
         <React.Fragment>
             {
                 item.map((element, index) => {
-                    return <td key={index}>{item[index]}</td>
+                    return <td key={index} align={
+                        (typeof item[index] === 'number') ? "center" : "left"
+                    }>{item[index]}</td>
                 })
             }
         </React.Fragment>

@@ -1,9 +1,10 @@
 import React from 'react';
 import ExcelRendererOutTableItemList from './ExcelRendererOutTableItemList';
+import { Table } from 'react-bootstrap';
 
 export default function ExcelRendererOutTable({ data }) {
     return (
-        <table>
+        <Table striped bordered hover>
             <thead>
                 {
                     !!data && data.rows.map((item, key) => {
@@ -18,6 +19,6 @@ export default function ExcelRendererOutTable({ data }) {
                     })
                 }
             </tbody>
-        </table>
+        </Table>
     )
 }
