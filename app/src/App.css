@@ -2,3 +2,7 @@ thead
 {
     font-weight: bold;
 }
+
+table > tbody > tr {
+    cursor: pointer;
+}

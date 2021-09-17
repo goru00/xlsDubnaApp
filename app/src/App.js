@@ -5,6 +5,7 @@ import InputComponent from "./components/InputComponent";
 import Pagination from './components/Pagination';
 import { Container } from "react-bootstrap";
 import _ from "lodash";
+import ListTable from "./components/ListTable";
 
 function App() {
   const [data, setData] = useState('');
@@ -22,6 +23,7 @@ function App() {
       if (err) {
         console.log(err);
       } else {
+        setCurrentPage(1);
         setData({
           cols: resp.cols,
           rows: resp.rows
@@ -38,7 +40,7 @@ function App() {
         />
         <ExcelRendererOutTable 
           thead={_(data.rows).slice(0).take(1).value()}
-          tbody={_(data.rows).slice((currentPage - 1 === 0) ? 0 : (currentPage - 1) * pageSize).take(pageSize).value()} 
+          tbody={_(data.rows).slice((currentPage - 1) * pageSize).take(pageSize + 1).value()} 
         />
         <Pagination 
           pages={pages} 

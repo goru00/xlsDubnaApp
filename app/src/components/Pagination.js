@@ -10,6 +10,11 @@ export default function PaginationComponent({ pages, currentPage, setCurrentPage
                 return <li 
                     className={ item === currentPage ? "page-item active" : "page-item" } 
                     key={index}
+                    style={
+                      {
+                        cursor: 'pointer'
+                      }
+                    }
                     ><p 
                     className="page-link"
                     onClick={() => setCurrentPage(item)}
