@@ -1,53 +1,18 @@
-import { useState } from "react";
-import { ExcelRenderer } from './ExcelRenderer';
-import ExcelRendererOutTable from "./components/ExcelRendererOutTable";
-import InputComponent from "./components/InputComponent";
-import Pagination from './components/Pagination';
-import { Container } from "react-bootstrap";
-import _ from "lodash";
-import ListTable from "./components/ListTable";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Tables from './pages/Tables';
 
 function App() {
-  const [data, setData] = useState('');
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
-  const pageCount = data ? Math.ceil((data.rows.length - 1) / pageSize) : 0;
-  if (pageCount === 1) return null;
-  const pages = _.range(1, pageCount + 1);
-
-  function fileHandler(event) {
-    let fileObj = event.target.files[0];
-    setCurrentPage(1);
-    ExcelRenderer(fileObj, (err, resp) => {
-      if (err) {
-        console.log(err);
-      } else {
-        setCurrentPage(1);
-        setData({
-          cols: resp.cols,
-          rows: resp.rows
-        })
-      }
-    });
-  }
-
   return (
     <div className="wrapper">
-      <Container>
-        <InputComponent 
-          fileHandler={fileHandler} 
-        />
-        <ExcelRendererOutTable 
-          thead={_(data.rows).slice(0).take(1).value()}
-          tbody={_(data.rows).slice((currentPage - 1) * pageSize).take(pageSize + 1).value()} 
-        />
-        <Pagination 
-          pages={pages} 
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      </Container>
+      <BrowserRouter>
+        <Navbar />
+        <Switch>
+          <Route path={'/'} exact component={Home} />
+          <Route path={'/tables'} component={Tables} />
+        </Switch>
+      </BrowserRouter>
     </div>
   )
 }
