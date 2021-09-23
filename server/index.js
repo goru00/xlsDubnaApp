@@ -10,7 +10,7 @@ const corsOption = {
 
 app.use(cors(corsOption));
 
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Response /"})
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
