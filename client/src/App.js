@@ -1,9 +1,10 @@
+import { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Tables from './pages/Tables';
 
-function App() {
+/*function App() {
   return (
     <div className="wrapper">
       <BrowserRouter>
@@ -15,6 +16,11 @@ function App() {
       </BrowserRouter>
     </div>
   )
+}*/
+
+class App extends Component
+{
+  
 }
 
 export default App;

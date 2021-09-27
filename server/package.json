@@ -1,10 +1,11 @@
 {
-  "name": "node-js-jwt-auth",
+  "name": "un_fkt_server",
   "version": "1.0.0",
-  "description": "Node.js Demo for JWT Authentication",
+  "description": "un_fkt server",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "keywords": [
     "node.js",
@@ -13,7 +14,7 @@
     "express",
     "mysql"
   ],
-  "author": "bezkoder",
+  "author": "goru00",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
