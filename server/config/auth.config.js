@@ -1,3 +1,3 @@
 module.exports = {
-  secret: "unfkt-secret-key"
+    secret: "un-fkt-secret"
 };
