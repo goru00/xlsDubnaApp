@@ -35,7 +35,7 @@ db.mongoose
     process.exit();
   });
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome" });
 });
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
