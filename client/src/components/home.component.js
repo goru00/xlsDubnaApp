@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import UserService from "../services/user.service";
 
 export default class Home extends Component {
@@ -7,7 +6,7 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
-      content: ""
+      tablename: ""
     };
   }
 
@@ -15,13 +14,14 @@ export default class Home extends Component {
     UserService.getPublicContent().then(
       response => {
         this.setState({
-          content: response.data
+          tablename: response.data.tablename
         });
       },
       error => {
         this.setState({
           content:
-            (error.response && error.response.data) ||
+            (error.response && error.response.data && 
+              error.response.data.tablename) ||
             error.message ||
             error.toString()
         });
@@ -32,9 +32,13 @@ export default class Home extends Component {
   render() {
     return (
       <div className="container">
-        <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-        </header>
+        <ul>
+          {
+            this.state.tablename && this.state.tablename.forEach((item, index) => {
+              return <li>1</li>              
+            })
+          }
+        </ul>
       </div>
     );
   }

@@ -7,7 +7,7 @@ export default function ExcelRendererOutTable({ thead, tbody }) {
         <Table striped bordered hover>
             <thead>
                 {
-                    !!thead && thead.map((item, key) => {
+                    !!thead && thead.forEach((item, key) => {
                         return !key && <tr key={key}><ExcelRendererOutTableItemList item={item} /></tr>
                     })
                 }
