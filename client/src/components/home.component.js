@@ -1,20 +1,26 @@
 import React, { Component } from "react";
 import UserService from "../services/user.service";
+import { Accordion } from 'react-bootstrap';
+
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      tablename: ""
+      tablename: [],
+      data: null,
+      loading: true
     };
   }
 
   componentDidMount() {
+
     UserService.getPublicContent().then(
       response => {
         this.setState({
-          tablename: response.data.tablename
+          tablename: response.data.tablename,
+          data: response.data.data,
+          loading: false
         });
       },
       error => {
@@ -32,13 +38,21 @@ export default class Home extends Component {
   render() {
     return (
       <div className="container">
-        <ul>
+        <header className="jumbotron">
+          <h3>
+            <strong>Таблицы</strong>
+          </h3>
+        </header>
+        {
+          (this.state.loading) ? <span className="spinner-border spinner-border"></span> :
+          (<Accordion>
           {
-            this.state.tablename && this.state.tablename.forEach((item, index) => {
-              return <li>1</li>              
+            this.state.forEach((item, index) => {
+              console.log(item)
             })
           }
-        </ul>
+          </Accordion>)
+        }
       </div>
     );
   }
