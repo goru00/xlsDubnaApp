@@ -5,12 +5,14 @@ const Contents = db.contents;
 
 exports.allAccess = (req, res) => {
   Contents.find().exec((err, data) => {
-    let tb = [];
+    let tb = [], d = [];
     for (let num = 0; num < data.length; num++) {
       tb.push(data[num].tablename);
+      d.push(data[num].data);
     }
-    res.status(200).send({
-      tablename: tb
+    res.status(200).json({
+      tablename: tb, 
+      data: d
     });
   });
 };

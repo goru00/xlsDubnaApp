@@ -4,15 +4,7 @@ const Contents = mongoose.model(
     "Contents",
     new mongoose.Schema({
         tablename: String,
-        data: {
-            cols: [
-                {
-                    name: String,
-                    keys: Number
-                }
-            ],
-            rows: [Array]
-        }
+        data: [Array]
     })
 );
 
