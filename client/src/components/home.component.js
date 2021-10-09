@@ -1,6 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import UserService from "../services/user.service";
 import { Accordion } from 'react-bootstrap';
+import AccordionItem from "react-bootstrap/esm/AccordionItem";
+import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
+import AccordionBody from "react-bootstrap/esm/AccordionBody";
+import Table from './table.component';
 
 
 export default class Home extends Component {
@@ -47,8 +51,19 @@ export default class Home extends Component {
           (this.state.loading) ? <span className="spinner-border spinner-border"></span> :
           (<Accordion>
           {
-            this.state.forEach((item, index) => {
-              console.log(item)
+            this.state.data.map((item, index) => {
+              return (
+              <AccordionItem 
+                eventKey={index}
+                key={index} 
+              >
+                <AccordionHeader>{this.state.tablename[index]}</AccordionHeader>
+                <AccordionBody>
+                  <Suspense fallback={<span className="spinner-border spinner-border"></span>}>
+                    <Table item={item} />
+                  </Suspense>
+                </AccordionBody>
+              </AccordionItem>)
             })
           }
           </Accordion>)
