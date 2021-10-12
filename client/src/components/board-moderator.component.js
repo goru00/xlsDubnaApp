@@ -40,9 +40,7 @@ export default class BoardModerator extends Component {
     return (
       <div className="container">
         <header className="jumbotron">
-        <input 
-            type="file"
-        />
+          <h3>{this.state.content}</h3>
         </header>
       </div>
     );

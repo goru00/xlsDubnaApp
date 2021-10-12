@@ -6,7 +6,6 @@ import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 import AccordionBody from "react-bootstrap/esm/AccordionBody";
 import Table from './table.component';
 
-
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +59,7 @@ export default class Home extends Component {
                 <AccordionHeader>{this.state.tablename[index]}</AccordionHeader>
                 <AccordionBody>
                   <Suspense fallback={<span className="spinner-border spinner-border"></span>}>
-                    <Table item={item} />
+                    <Table data={item} />
                   </Suspense>
                 </AccordionBody>
               </AccordionItem>)
