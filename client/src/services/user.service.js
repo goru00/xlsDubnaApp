@@ -5,9 +5,9 @@ const API_URL = "http://localhost:8080/api/pub/";
 
 class UserService {
 
-  /*setPublicContent() {
-    return axios.post(API_)
-  }*/
+  setPublicContent() {
+    return axios.post(API_URL + "all");
+  }
 
   getPublicContent() {
     return axios.get(API_URL + "all");

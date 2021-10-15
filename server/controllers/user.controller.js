@@ -20,7 +20,11 @@ exports.allAccess = (req, res) => {
 exports.userBoard = (req, res) => {
   res.status(200).send("User Content.");
 };
+
+exports.importFile = (req, res) => {
   
+}
+
 exports.adminBoard = (req, res) => {
   res.status(200).send("Admin Content.");
 };
