@@ -1,4 +1,5 @@
 const { authJwt } = require("../middlewares");
+const { contents } = require('../middlewares');
 const controller = require("../controllers/user.controller");
 
 module.exports = function(app) {
@@ -10,14 +11,27 @@ module.exports = function(app) {
     next();
   });
 
-  app.get("/api/pub/all", controller.allAccess);
+  app.get(
+    "/api/pub/all", 
+    controller.allAccess
+  );
 
-  app.get("/api/pub/user", [authJwt.verifyToken], controller.userBoard);
+  app.post(
+    "/api/pub/setContent",
+    [authJwt.verifyToken, contents.checkDuplicateTableName],
+    controller.importFile
+  );
+
+  app.get(
+    "/api/pub/user", 
+    [authJwt.verifyToken], 
+    controller.userBoard
+  );
 
   app.get(
     "/api/pub/mod",
     [authJwt.verifyToken, authJwt.isModerator],
-    controller.moderatorBoard
+    [controller.moderatorBoard, controller.importFile]
   );
 
   app.get(

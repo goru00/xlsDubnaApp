@@ -1,8 +1,6 @@
 const db = require('../models');
 const Contents = db.contents;
 
-
-
 exports.allAccess = (req, res) => {
   Contents.find().exec((err, data) => {
     let tb = [], d = [];
@@ -22,7 +20,17 @@ exports.userBoard = (req, res) => {
 };
 
 exports.importFile = (req, res) => {
-  
+  const content = new Contents({
+    tablename: req.body.tablename,
+    data: req.body.data
+  });
+  content.save((err, table) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+  });
+  res.status(200).send({ message: "Данные были успешно загружены!" });
 }
 
 exports.adminBoard = (req, res) => {
