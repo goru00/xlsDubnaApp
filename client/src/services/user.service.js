@@ -5,8 +5,12 @@ const API_URL = "http://localhost:8080/api/pub/";
 
 class UserService {
 
-  setPublicContent() {
-    return axios.post(API_URL + "all");
+  setPublicContent(tablename, data) {
+    return axios
+      .post(API_URL + "setContent", { headers: authHeader(), tablename })
+      .then((response) => {
+        return response.data;
+      });
   }
 
   getPublicContent() {

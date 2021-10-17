@@ -1,18 +1,36 @@
 import React, { Component } from 'react';
 import { ExcelRenderer } from '../ExcelRenderer';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export default class Import extends Component {
 
   constructor(props) {
     super(props); 
     this.fileHandler = this.fileHandler.bind(this);
-    this.fileInput = React.createRef();
-    this.fileForm = React.createRef();
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeTablename = this.onChangeTablename.bind(this);
     this.state = {
-      tablename: null,
-      data: null
+      tablename: '',
+      data: null,
+      loading: false
     }
+  }
+
+  onChangeTablename(event) {
+    this.setState({
+      tablename: event.target.value
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.setState({
+      loading: true,
+    });
+    this.form.validateAll();
+    const { dispatch, history } = this.props;
   }
 
   fileHandler(event) {
@@ -24,7 +42,6 @@ export default class Import extends Component {
           console.log(err);
         } else {
           this.setState({
-            tablename: fileObj.name,
             data: resp.rows 
           })
         }
@@ -33,6 +50,7 @@ export default class Import extends Component {
   }
 
   render() {
+    const { message } = this.props;
     return (
       <div className="importXLS">
         <Form.Group 
@@ -45,6 +63,43 @@ export default class Import extends Component {
             ref={this.fileInput} 
           />
         </Form.Group>
+        {message && (
+          <div className="form-group">
+            <div className="alert alert-danger" role="alert">
+              {message}
+            </div>
+          </div>
+        )}
+        {
+          !!this.props.render(this.state.data) && (
+          <Form onSubmit={this.handleSubmit}>
+            <Row className="align-items-center">
+            <Col sm={3} className="my-1">
+              <Form.Control 
+                id="inlineFormInputName" 
+                placeholder="Название таблицы"
+                value={this.state.tablename}
+                onChange={this.onChangeTablename}
+                required 
+              />
+            </Col>
+            </Row>
+            <Row>
+            <Col xs="auto">
+              <button 
+                type="submit" 
+                className="btn btn-primary btn-block"
+                disabled={this.state.loading}
+              >
+                {this.state.loading && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )}
+              <span>Загрузить данные</span>
+              </button>
+            </Col>
+            </Row>
+          </Form>)
+        }
         {
           this.props.render(this.state.data)
         }
