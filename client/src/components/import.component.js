@@ -1,16 +1,31 @@
 import React, { Component } from 'react';
 import { ExcelRenderer } from '../ExcelRenderer';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
-export default class Import extends Component {
+import CheckButton from "react-validation/build/button";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+
+import { connect } from "react-redux";
+import { setPublicContent } from "../actions/content";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Поле является обязательным!
+      </div>
+    );
+  }
+};
+
+class Import extends Component {
 
   constructor(props) {
     super(props); 
-    this.fileHandler = this.fileHandler.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onChangeTablename = this.onChangeTablename.bind(this);
+    this.onChangeFile = this.onChangeFile.bind(this);
+    this.fileInput = React.createRef();
     this.state = {
       tablename: '',
       data: null,
@@ -18,22 +33,7 @@ export default class Import extends Component {
     }
   }
 
-  onChangeTablename(event) {
-    this.setState({
-      tablename: event.target.value
-    });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    this.setState({
-      loading: true,
-    });
-    this.form.validateAll();
-    const { dispatch, history } = this.props;
-  }
-
-  fileHandler(event) {
+  onChangeFile(event) {
     event.preventDefault();
     let fileObj = this.fileInput.current.files[0];
     if (fileObj) {
@@ -49,61 +49,111 @@ export default class Import extends Component {
     }
   }
 
+  onChangeTablename(event) {
+    this.setState({
+      tablename: event.target.value
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.setState({
+      loading: true,
+    });
+
+    this.form.validateAll();
+
+    const { dispatch, history } = this.props;
+
+    if (this.checkBtn.context._errors.length === 0) {
+      dispatch(setPublicContent(this.state.tablename, this.state.data))
+        .then(() => {
+          history.push("/user");
+          window.location.reload();
+        })
+        .catch(() => {
+          this.setState({
+            loading: false
+          });
+        });
+    } else {
+      this.setState({
+        loading: false
+      });
+    }
+  }
+
   render() {
     const { message } = this.props;
+
     return (
-      <div className="importXLS">
-        <Form.Group 
-          controlId="formFile" 
-          className="mb-3"
-        >
-          <Form.Control 
-            type="file"
-            onChange={this.fileHandler}
-            ref={this.fileInput} 
-          />
-        </Form.Group>
-        {message && (
-          <div className="form-group">
-            <div className="alert alert-danger" role="alert">
-              {message}
+        <div className="importXLS col-md-12">
+          <Form
+            onSubmit={this.handleSubmit}
+            ref={(c) => {
+              this.form = c;
+            }}
+          >
+            <div className="form-group">
+            <input
+                type="file"
+                className="form-control"
+                name="fileXLS"
+                onChange={this.onChangeFile}
+                ref={this.fileInput}
+              />
             </div>
-          </div>
-        )}
-        {
-          !!this.props.render(this.state.data) && (
-          <Form onSubmit={this.handleSubmit}>
-            <Row className="align-items-center">
-            <Col sm={3} className="my-1">
-              <Form.Control 
-                id="inlineFormInputName" 
-                placeholder="Название таблицы"
+            {
+              message && (
+                <div className="form-group">
+                  <div className="alert alert-danger" role="alert">
+                    {message}
+                  </div>
+                </div>
+              )
+            }
+            {!!this.props.render(this.state.data) && (
+            <div className="form-group">
+              <Input
+                type="text"
+                name="tablename"
+                className="form-control"
                 value={this.state.tablename}
                 onChange={this.onChangeTablename}
-                required 
+                placeholder="Название таблицы"
+                validations={[required]}
               />
-            </Col>
-            </Row>
-            <Row>
-            <Col xs="auto">
-              <button 
-                type="submit" 
+              <button
                 className="btn btn-primary btn-block"
                 disabled={this.state.loading}
               >
                 {this.state.loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}
-              <span>Загрузить данные</span>
+                <span>Загрузить данные</span>
               </button>
-            </Col>
-            </Row>
-          </Form>)
-        }
-        {
-          this.props.render(this.state.data)
-        }
-      </div>
+            </div>
+            )}
+            <CheckButton
+              style={{ display: "none" }}
+              ref={(c) => {
+                this.checkBtn = c;
+              }}
+            />
+          </Form>
+          {
+            this.props.render(this.state.data)
+          }
+        </div>
     );
   }
 }
+
+function mapStateToProps(state) {
+  const { message } = state.message;
+  return {
+    message
+  };
+}
+
+export default connect(mapStateToProps)(Import);

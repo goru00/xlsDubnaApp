@@ -47,25 +47,27 @@ export default class Home extends Component {
           </h3>
         </header>
         {
-          (this.state.loading) ? <span className="spinner-border spinner-border"></span> :
-          (<Accordion>
-          {
-            this.state.data.map((item, index) => {
-              return (
-              <AccordionItem 
-                eventKey={index}
-                key={index} 
-              >
-                <AccordionHeader>{this.state.tablename[index]}</AccordionHeader>
-                <AccordionBody>
-                  <Suspense fallback={<span className="spinner-border spinner-border"></span>}>
-                    <Table data={item} />
-                  </Suspense>
-                </AccordionBody>
-              </AccordionItem>)
-            })
-          }
-          </Accordion>)
+          this.state.loading ? <span className="spinner-border spinner-border"></span> : 
+          ( 
+            this.state.data[0] ? (<Accordion>
+              {
+                this.state.data.map((item, index) => {
+                  return (
+                  <AccordionItem 
+                    eventKey={index}
+                    key={index} 
+                  >
+                    <AccordionHeader>{this.state.tablename[index]}</AccordionHeader>
+                    <AccordionBody>
+                      <Suspense fallback={<span className="spinner-border spinner-border"></span>}>
+                        <Table data={item} />
+                      </Suspense>
+                    </AccordionBody>
+                  </AccordionItem>)
+                })
+              }
+              </Accordion>) : <p className="lead">Пока здесь нет данных</p>
+          )
         }
       </div>
     );

@@ -4,10 +4,9 @@ import authHeader from "./auth-header";
 const API_URL = "http://localhost:8080/api/pub/";
 
 class UserService {
-
   setPublicContent(tablename, data) {
     return axios
-      .post(API_URL + "setContent", { headers: authHeader(), tablename })
+      .post(API_URL + "setContent", { tablename, data }, { headers: authHeader() })
       .then((response) => {
         return response.data;
       });

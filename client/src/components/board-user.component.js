@@ -3,6 +3,7 @@ import UserService from "../services/user.service";
 import EventBus from "../common/EventBus";
 import Import from './import.component';
 
+
 const Table = React.lazy(() => import('./table.component'));
 
 export default class BoardUser extends Component {
@@ -13,6 +14,7 @@ export default class BoardUser extends Component {
       access: false
     };
   }
+
   componentDidMount() {
     UserService.getUserBoard().then(
       response => {
