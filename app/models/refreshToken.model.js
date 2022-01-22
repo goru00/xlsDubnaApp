@@ -3,28 +3,31 @@ const { v4: uuidv4 } = require('uuid');
 const mongoose = require('mongoose');
 
 module.exports = () => { 
-    const RefreshToken = mongoose.model('refreshToken', new mongoose.Schema({
+    const RefreshTokenSchema = new mongoose.Schema({
         token: {
             type: String
         },
-        expiryDate: {
-            type: Date
-        }
-    })); 
-    RefreshToken.createToken = async function(user) {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+        expiryDate: Date
+    }); 
+    RefreshTokenSchema.statics.createToken = async function(user) {
         let expiredAt = new Date();
         expiredAt.setSeconds(expiredAt.getSeconds() + config.jwtRefreshExpiration);
         let token = uuidv4();
-        let refreshToken = await this.create({
+        let obj = new this({
             token: token,
-            userId: user.id,
-            expiryDate: expiredAt.getTime() 
+            user: user._id,
+            expiryDate: expiredAt.getTime()
         });
+        let refreshToken = await obj.save();
         return refreshToken.token;
     };
-    RefreshToken.verifyExpiration = (token) => {
+    RefreshTokenSchema.statics.verifyExpiration = (token) => {
         return token.expiryDate.getTime() < new Date().getTime();
     };
-    return RefreshToken;
+    return RefreshTokenSchema;
 };
 
