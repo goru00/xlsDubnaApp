@@ -10,6 +10,6 @@ db.role = require('./role.model');
 db.data = require('./data.model');
 db.refreshToken = require('./refreshToken.model');
 
-db.ROLES = ['user', 'administrator', 'user'];
+db.ROLES = ['user', 'moderator', 'admin'];
 
 module.exports = db;

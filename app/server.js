@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const router = require('./routes/index');
 
 const app = express();
 
@@ -13,11 +14,13 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/v1/api/', router);
+
 const db = require('./models');
 const Role = db.role;
 
 db.mongoose 
-    .connect(`mongodb+srv://root:1234@cluster0.txkgt.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-zqjldy-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true`, 
+    .connect(`mongodb://root:1234@cluster0-shard-00-00.txkgt.mongodb.net:27017,cluster0-shard-00-01.txkgt.mongodb.net:27017,cluster0-shard-00-02.txkgt.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-zqjldy-shard-0&authSource=admin&retryWrites=true&w=majority`, 
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -40,6 +43,7 @@ function initial()
             }).save(err => {
                 if (err) {
                     console.log("error initial: ", err);
+                    return;
                 }
                 console.log("added 'user' to roles collection");
             });
@@ -48,16 +52,18 @@ function initial()
             }).save(err => {
                 if (err) {
                     console.log("error initial: ", err);
+                    return;
                 }
-                console.log("added 'user' to roles collection");
+                console.log("added 'moderator' to roles collection");
             });
             new Role({
                 name: "admin"
             }).save(err => {
                 if (err) {
                     console.log("error initial: ", err);
+                    return;
                 }
-                console.log("added 'user' to roles collection");
+                console.log("added 'admin' to roles collection");
             });
         }
     });

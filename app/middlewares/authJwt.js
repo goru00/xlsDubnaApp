@@ -12,7 +12,7 @@ const catchError = (err, res) => {
 }
 
 const verifyToken = (req, res, next) => {
-    let token = res.headers['x-access-token'];
+    let token = req.headers['x-access-token'];
     if (!token) {
         return res.status(403).send({ message: "No token provided!" });
     }
@@ -31,11 +31,12 @@ const isAdmin = (req, res, next) => {
             res.status(500).send({ message: err });
         }
         Role.find({
-            id: {
+            _id: {
                 $in: user.roles
             }
         }, 
         (err, roles) => {
+            console.log(roles)
             if (err) {
                 res.status(500).send({ message: err });
                 return;
@@ -57,7 +58,7 @@ const isModerator = (req, res, next) => {
             res.status(500).send({ message: err });
         }
         Role.find({
-            id: {
+            _id: {
                 $in: user.roles
             }
         }, 
@@ -83,7 +84,7 @@ const isUser = (req, res, next) => {
             res.status(500).send({ message: err });
         }
         Role.find({
-            id: {
+            _id: {
                 $in: user.roles
             }
         }, 
