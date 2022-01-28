@@ -7,28 +7,39 @@ class DataContent {
     async get(req, res) {
         const { id } = req.params;
         if (id) {
-            Data.findOne({
-                _id: id
-            }, (err, data) => {
+            Data.findById(id).exec((err, data) => {
                 if (err) {
                     res.status(500).send({ message: err });
                     return;
                 }
-                if (!data) {
-                    return res.status(404).send({ message: "Data not found" });
-                }
-                res.status(200).send(data);                
+                res.status(200).send(data);
             });
         } else {
-            Data.find({
-                isPublic: true
-            }).exec((err, data) => {
+            const { page, limit } = req.query;
+            if (!(page || limit)) {
+                res.status(500).send({ message: "Page and limit is undefined"});
+                return;
+            }
+            Data.find()
+            .skip(page > 0 ? ((page - 1) * limit) : 0)
+            .limit(limit)
+            .exec((err, data) => {
                 if (err) {
                     res.status(500).send({ message: err });
                     return;
                 }
-                res.status(200).send(data); 
-            })
+                let datas = [];
+                data.forEach((data) => {
+                    datas.push({
+                        _id: data._id,
+                        tablename: data.tablename,
+                        author: data.author,
+                        createdAt: data.createdAt,
+                        updatedAt: data.updatedAt
+                    });
+                })
+                res.status(200).send(datas);
+            });
         }
     }
     async create(req, res) {
@@ -46,7 +57,6 @@ class DataContent {
                 const content = new Data({
                     tablename: req.file.filename,
                     tableData: data,
-                    isPublic: false,
                     author: req.userId,
                     createdAt: new Date(),
                     updatedAt: {
@@ -83,21 +93,19 @@ class DataContent {
                 res.status(500).send({ message: err });
                 return;
             }
-            if (!(data.tablename || data.tableData || data.isPublic)) {
+            if (!(data.tablename || data.tableData)) {
                 res.status(500).send({ message: "Body request is empty"});
                 return;
             }
             const { 
                 tablename = data.tablename,
-                tableData = data.tableData,
-                isPublic = data.isPublic
+                tableData = data.tableData
             } = req.body;
             Data.updateOne({
                 _id: data._id
             }, {
                 tablename: tablename,
                 tableData: tableData,
-                isPublic: isPublic,
                 updatedAt: {
                     user: req.userId,
                     date: new Date()

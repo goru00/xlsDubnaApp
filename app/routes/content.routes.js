@@ -14,16 +14,20 @@ router.use(function(req, res, next) {
 });
 
 router.get('/', dataController.get);
+router.get('/:id', dataController.get);
+
 router.post('/', [
     upload.single("file"), 
     verifyToken, 
     isAdminOrModerator
 ], dataController.create);
+
 router.patch('/:id', [
     verifyToken,
     isAdminOrModerator,
     checkDuplicateTablename
 ], dataController.update);
+
 router.delete('/:id', [
     verifyToken,
     isAdminOrModerator

@@ -37,7 +37,6 @@ const isAdmin = (req, res, next) => {
             }
         }, 
         (err, roles) => {
-            console.log(roles)
             if (err) {
                 res.status(500).send({ message: err });
                 return;
