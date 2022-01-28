@@ -9,7 +9,7 @@ const catchError = (err, res) => {
         return res.status(401).send({ message: "Unauthorized! Access Token was expired!" });
     }
     return res.sendStatus(401).send({ message: "Unauthorized!" });
-}
+};
 
 const verifyToken = (req, res, next) => {
     let token = req.headers['x-access-token'];
@@ -22,13 +22,14 @@ const verifyToken = (req, res, next) => {
         }
         req.userId = decode.id;
         next();
-    })
-}
+    });
+};
 
 const isAdmin = (req, res, next) => {
     User.findById(req.userId).exec((err, user) => {
         if (err) {
             res.status(500).send({ message: err });
+            return;
         }
         Role.find({
             _id: {
@@ -51,11 +52,12 @@ const isAdmin = (req, res, next) => {
             return;
         });
     });
-}
+};
 const isModerator = (req, res, next) => {
     User.findById(req.userId).exec((err, user) => {
         if (err) {
             res.status(500).send({ message: err });
+            return;
         }
         Role.find({
             _id: {
@@ -77,11 +79,12 @@ const isModerator = (req, res, next) => {
             return;
         });
     });
-}
+};
 const isUser = (req, res, next) => {
     User.findById(req.userId).exec((err, user) => {
         if (err) {
             res.status(500).send({ message: err });
+            return;
         }
         Role.find({
             _id: {
@@ -103,6 +106,34 @@ const isUser = (req, res, next) => {
             return;
         });
     });
+};
+
+const isAdminOrModerator = (req, res, next) => {
+    User.findById(req.userId).exec((err, user) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+        Role.find({
+            _id: {
+                $in: user.roles
+            }
+        }, 
+        (err, roles) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            for (let i = 0; i < roles.length; i++) {
+                if (roles[i].name === 'admin' || roles[i].name === 'moderator') {
+                    next();
+                    return;
+                }
+            }
+            res.status(403).send({ message: "Require Admin or moderator Role!" });
+            return;
+        });
+    });
 }
 
 module.exports = {
@@ -110,5 +141,6 @@ module.exports = {
     verifyToken,
     isAdmin,
     isModerator,
-    isUser
+    isUser,
+    isAdminOrModerator
 };

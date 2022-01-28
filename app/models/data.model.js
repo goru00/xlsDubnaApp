@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 
 const Data = mongoose.model("datas", new mongoose.Schema({
     tablename: String,
-    data: Array,
-    sizeCells: {
-        collumnsSize: Array,
-        rowsSize: Array 
-    },
+    tableData: Array,
     isPublic: Boolean,
     author: {
         type: mongoose.Schema.Types.ObjectId,

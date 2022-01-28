@@ -3,6 +3,7 @@ const router = new Router();
 
 const authRouter = require('./auth.routes');
 const userRouter = require('./user.routes');
+const contentRouter = require('./content.routes');
 
 router.use(function(req, res, next) {
     res.header(
@@ -14,5 +15,6 @@ router.use(function(req, res, next) {
 
 router.use('/user', userRouter);
 router.use('/auth', authRouter);
+router.use('/content', contentRouter);
 
 module.exports = router;

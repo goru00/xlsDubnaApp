@@ -65,7 +65,6 @@ class Auth {
             username: req.body.username
         })
         .exec(async (err, user) => {
-            console.log(user)
             if (err) {
                 res.status(500).send({ message: err });
                 return;
