@@ -2,6 +2,9 @@ const db = require('../models');
 const User = db.user;
 const Data = db.data;
 const readXlsxFile = require('read-excel-file/node');
+const parseXLSX = require('exceljs');
+const { v4: uuidv4 } = require('uuid');
+const { findById } = require('../models/user.model');
 
 class DataContent {
     async get(req, res) {
@@ -42,6 +45,42 @@ class DataContent {
             });
         }
     }
+    async download(req, res) {
+        const { id } = req.params;
+        Data.findById(id).exec((err, data) => {
+
+            let dataRows = [];
+
+            data.tableData.forEach((obj) => {
+                dataRows.push(obj)
+            });
+
+            let workbook = new parseXLSX.Workbook();
+            let worksheet = workbook.addWorksheet("List1");
+
+            data.tableHeader.forEach((head) => {
+                worksheet.columns.push({
+                    header: head,
+                    key: head.toLowerCase(),
+                    width: head.length
+                });
+            });
+            worksheet.addRows(dataRows);
+
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                "attachment; filename=" + uuidv4() + ".xlsx"
+            );
+          
+            return workbook.xlsx.write(res).then(function () {
+                res.status(200).end();
+            });
+        })
+    }
     async create(req, res) {
         try {
             if (req.file === undefined) {
@@ -49,6 +88,10 @@ class DataContent {
             }
             let path = "../app/resources/static/assets/uploads/" + req.file.filename;
             readXlsxFile(path).then((rows) => {
+                let header = [];
+                rows[0].forEach((head) => {
+                    header.push(head);
+                });
                 rows.shift();
                 let data = [];
                 rows.forEach((row) => {
@@ -56,6 +99,7 @@ class DataContent {
                 });
                 const content = new Data({
                     tablename: req.file.filename,
+                    tableHeader: header,
                     tableData: data,
                     author: req.userId,
                     createdAt: new Date(),
@@ -70,7 +114,7 @@ class DataContent {
                         return;
                     }
                     if (req.userId) {
-                        User.findById(req.userId, (err, user) => {
+                        User.findById(req.userId, (err, data) => {
                             if (err) {
                                 res.status(500).send({ message: err });
                                 return;
@@ -93,18 +137,20 @@ class DataContent {
                 res.status(500).send({ message: err });
                 return;
             }
-            if (!(data.tablename || data.tableData)) {
+            if (!(data.tablename || data.tableHeader || data.tableData)) {
                 res.status(500).send({ message: "Body request is empty"});
                 return;
             }
             const { 
                 tablename = data.tablename,
-                tableData = data.tableData
+                tableData = data.tableData,
+                tableHeader = data.tableHeader
             } = req.body;
             Data.updateOne({
                 _id: data._id
             }, {
                 tablename: tablename,
+                tableHeader: tableHeader,
                 tableData: tableData,
                 updatedAt: {
                     user: req.userId,
@@ -115,7 +161,7 @@ class DataContent {
                     res.status(500).send({ message: err });
                     return;
                 }
-                res.status(200).send({ message: "Data was update successfully"});
+                res.status(200).send({ message: "Data was update successfully", item});
             });
         });
     }

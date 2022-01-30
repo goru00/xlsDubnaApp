@@ -16,6 +16,9 @@ router.use(function(req, res, next) {
 router.get('/', dataController.get);
 router.get('/:id', dataController.get);
 
+//router.get('/download', dataController.download);
+router.get('/:id/download', dataController.download);
+
 router.post('/', [
     upload.single("file"), 
     verifyToken, 
