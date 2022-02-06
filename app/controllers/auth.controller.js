@@ -10,7 +10,7 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 
 class Auth {
-    signup(req, res) {
+    async signup(req, res) {
         const { username, password, roles } = req.body; 
         const user = new User({
             username: username,
@@ -60,11 +60,10 @@ class Auth {
             }
         });
     }
-    signin(req, res) {
+    async signin(req, res) {
         User.findOne({
             username: req.body.username
-        })
-        .exec(async (err, user) => {
+        }).populate('roles').exec(async (err, user) => {
             if (err) {
                 res.status(500).send({ message: err });
                 return;
@@ -83,9 +82,14 @@ class Auth {
                 expiresIn: config.jwtExpiration
             });
             let refreshToken = await RefreshToken.createToken(user);
+            let roles = [];
+            for (let x = 0; x < user.roles.length; x++) {
+                roles.push(user.roles[x].name.toUpperCase());
+            }
             res.status(200).send({
                 id: user._id,
                 username: user.username,
+                roles: roles,
                 accessToken: token, 
                 refreshToken: refreshToken
             });

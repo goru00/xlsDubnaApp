@@ -6,7 +6,7 @@ const User = mongoose.model('users', new mongoose.Schema({
     roles: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Role'
+            ref: 'roles'
         }
     ]
 }));
