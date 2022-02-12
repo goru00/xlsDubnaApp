@@ -4,11 +4,15 @@ const Data = db.data;
 const readXlsxFile = require('read-excel-file/node');
 const parseXLSX = require('exceljs');
 const { v4: uuidv4 } = require('uuid');
-const { findById } = require('../models/user.model');
 
 class DataContent {
     async get(req, res) {
         const { id } = req.params;
+        const { page, limit } = req.query;
+        if (!(page || limit)) {
+            res.status(500).send({ message: "Page and limit is undefined"});
+            return;
+        }
         if (id) {
             Data.findById(id).exec((err, data) => {
                 if (err) {
@@ -18,11 +22,7 @@ class DataContent {
                 res.status(200).send(data);
             });
         } else {
-            const { page, limit } = req.query;
-            if (!(page || limit)) {
-                res.status(500).send({ message: "Page and limit is undefined"});
-                return;
-            }
+            const count = await Data.estimatedDocumentCount();
             Data.find()
             .skip(page > 0 ? ((page - 1) * limit) : 0)
             .limit(limit)
@@ -35,13 +35,13 @@ class DataContent {
                 data.forEach((data) => {
                     datas.push({
                         _id: data._id,
-                        tablename: data.tablename,
-                        author: data.author,
-                        createdAt: data.createdAt,
-                        updatedAt: data.updatedAt
+                        tablename: data.tablename
                     });
-                })
-                res.status(200).send(datas);
+                });
+                res.status(200).send({
+                    datas,
+                    countDocument: count
+                });
             });
         }
     }
