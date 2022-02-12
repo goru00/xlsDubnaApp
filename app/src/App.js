@@ -1,25 +1,77 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import "./App.css";
 
-function App() {
+// components
+
+import Navbar from "./components/navbar/navbar";
+
+// pages
+
+import Home from "./pages/home/home";
+import Login from './pages/signin/login';
+import Register from './pages/signup/signup';
+import Profile from './pages/profile/profile';
+
+// services
+
+import { logout } from "./actions/auth";
+import { clearMessage } from "./actions/message";
+
+import { history } from './helpers/history';
+
+import EventBus from "./common/EventBus";
+
+function App(props) {
+  const [user, setUser] = useState(undefined);
+  const [loaded, setLoaded] = useState(false);
+
+  history.listen((location) => {
+    props.dispath(clearMessage());
+  });
+
+  useEffect(() => {
+
+    const user = props.user;
+
+    if (user) {
+      setUser({
+        currentUser: user,
+        rootRole: user.roles.includes("ROLE_MODERATOR") ||
+          user.roles.includes("ROLE_ADMIN")
+      });
+      setLoaded(true);
+    }
+
+    EventBus.on("logout", () => {
+      logout().bind(this);
+    });
+
+    if (loaded) return;
+  }, [loaded]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router history={history}>
+      <>
+        <Routes>
+          <Route path="/" element={<Navbar />}>
+            <Route index element={<Home />} />
+            <Route path="signin" element={<Login />} />
+            <Route path="signup" element={<Register />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Routes>
+      </>
+    </Router>
+  )
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { user } = state.auth;
+  return {
+    user
+  };
+}
+
+export default connect(mapStateToProps)(App);
