@@ -9,14 +9,15 @@ function Table({id}) {
     const [pages, setPages] = useState(1);
     const [limit, setLimit] = useState(10);
     const [loaded, setLoaded] = useState(false);
-    console.log("table")
     useEffect(() => {
-        UserService.getTableById(id)
+        setLoaded(false);
+        UserService.getTableById(id, page, limit)
         .then((res) => {
             setData(res.data);
+            setLoaded(true);
         }, (err) => {
             console.log(err)
-        })
+        });
     }, [id])
     return (
         <>
@@ -26,21 +27,32 @@ function Table({id}) {
                 {
                     data && (
                         <table>
-                            {
-                                data.map((row, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            {
-                                                row.map((col, index) => {
-                                                    return (
-                                                        <td key={index}>{col}</td>
-                                                    )
-                                                })
-                                            }
-                                        </tr>
-                                    )
-                                })
-                            }
+                            <thead>
+                                <tr>
+                                    {
+                                        data.tableHeader.map((item, index) => {
+                                            return <td key={index}>{item}</td>
+                                        })
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data.tableData.map((row, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                {
+                                                    row.map((col, index) => {
+                                                        return (
+                                                            <td key={index}>{col}</td>
+                                                        )
+                                                    })
+                                                }
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
                         </table>
                     )
                 }

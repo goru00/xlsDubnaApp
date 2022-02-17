@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Accordion, Spinner } from "react-bootstrap";
-import Table from "../../components/table/table";
 import NavPagination from "../../components/pagination/pagination";
+import Table from '../../components/table/table';
 
 import UserService from '../../services/user.service';
 
@@ -11,6 +11,7 @@ const Home = () => {
     const [limit, setLimit] = useState(10);
     const [pages, setPages] = useState(1);
     const [loaded, setLoaded] = useState(false);
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         setLoaded(false);
@@ -43,11 +44,18 @@ const Home = () => {
                                         key={index} 
                                         eventKey={index}
                                         >
-                                            <Accordion.Header>
+                                            <Accordion.Header
+                                                onClick={() => setShow(true) }
+                                            >
                                                 {item.tablename}
                                             </Accordion.Header>
                                             <Accordion.Body>
-                                                
+                                                {
+                                                    show && (
+                                                        <Table 
+                                                            id={item._id}
+                                                        />)
+                                                }
                                             </Accordion.Body>
                                         </Accordion.Item>
                                     )

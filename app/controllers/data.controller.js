@@ -9,12 +9,9 @@ class DataContent {
     async get(req, res) {
         const { id } = req.params;
         const { page, limit } = req.query;
-        if (!(page || limit)) {
-            res.status(500).send({ message: "Page and limit is undefined"});
-            return;
-        }
         if (id) {
-            Data.findById(id).exec((err, data) => {
+            Data.findById(id)
+            .exec((err, data) => {
                 if (err) {
                     res.status(500).send({ message: err });
                     return;
@@ -22,6 +19,10 @@ class DataContent {
                 res.status(200).send(data);
             });
         } else {
+            if (!(page || limit)) {
+                res.status(500).send({ message: "Page and limit is undefined"});
+                return;
+            }
             const count = await Data.estimatedDocumentCount();
             Data.find()
             .skip(page > 0 ? ((page - 1) * limit) : 0)

@@ -9,19 +9,21 @@ function Navbar(props) {
     const [currentUser, setCurrentUser] = useState();
 
     useEffect(() => {
-        console.log()
         const user = props.user;
         if (user) {
             setCurrentUser(user);
+        } else {
+            setCurrentUser(undefined);
         }
         EventBus.on("logout", () => {
             logOut();
-        })
+        });
     }, [props]);
 
     function logOut() {
-        setCurrentUser(undefined);
+        console.log("LOGOUT")
         props.dispatch(logout());
+        setCurrentUser(undefined);
     }
 
     return (

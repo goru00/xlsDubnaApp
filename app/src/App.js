@@ -32,9 +32,7 @@ function App(props) {
   });
 
   useEffect(() => {
-
     const user = props.user;
-
     if (user) {
       setUser({
         currentUser: user,
@@ -43,13 +41,10 @@ function App(props) {
       });
       setLoaded(true);
     }
-
     EventBus.on("logout", () => {
       logout().bind(this);
     });
-
-    if (loaded) return;
-  }, [loaded]);
+  }, [props]);
 
   return (
     <Router history={history}>
